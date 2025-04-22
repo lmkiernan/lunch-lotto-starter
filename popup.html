@@ -6,6 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lunch Lotto</title>
   <link rel="stylesheet" href="style.css">
+
+  <script src="libs/sweetalert.min.js"></script>
+  <script src="wheel.js"></script>
+  <script src="popup.js"></script>
 </head>
 
 <body>
@@ -27,7 +31,7 @@
           style="width: 100%; display: none;"
         ></progress>
       </div>
-      
+
       <div id="wheel-container">
         <img id="loading-gif" src="assets/loading.gif" alt="Loading..." style="display: none;">
         <canvas id="wheel" width="310" height="310"></canvas>
@@ -77,10 +81,6 @@
       <button id="close-history">Back</button>
     </div>
   </div>
-
-  <script src="libs/sweetalert.min.js"></script>
-  <script src="wheel.js"></script>
-  <script src="popup.js"></script>
 
 </body>
 
