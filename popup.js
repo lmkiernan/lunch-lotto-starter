@@ -90,7 +90,7 @@ const apiKey = "AIzaSyC47XrOijQWBir0G0UtB-cjdGy7wwx-VwM";
         const response = await fetch(url, {
           headers: {
             "Accept": "application/json",
-            "Authorization": FSQ_KEY
+            "Authorization": 'fsq3amMlkDLvTCkdPRzgKrSVKUhgbh2i7yz0b8vnA53mi8c='
           }
         });
         updateProgress(60);
