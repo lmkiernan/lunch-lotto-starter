@@ -25,6 +25,23 @@ function renderHistory() {
   });
 }
 
+function showProgress() {
+  const bar = document.getElementById('api-progress');
+  bar.style.display = 'block';
+  bar.value = 0;
+}
+
+function updateProgress(pct) {
+  const bar = document.getElementById('api-progress');
+  bar.value = pct;
+}
+
+function hideProgress() {
+  const bar = document.getElementById('api-progress');
+  // small delay so the user sees 100%
+  setTimeout(() => bar.style.display = 'none', 300);
+}
+
 // Load user settings or use defaults
 async function loadSettings() {
   return new Promise((resolve) => {
@@ -48,24 +65,35 @@ function hideHistory() {
 
 async function fetchRestaurants() {
     try {
+
+
       // 🔄 Show Loading GIF and Hide the Wheel
       document.getElementById("loading-gif").style.display = "block";
       document.getElementById("wheel").style.display = "none";
+      showProgress();
   
       navigator.geolocation.getCurrentPosition(async (position) => {
+        updateProgress(20);
         const { latitude: lat, longitude: lng } = position.coords;
         const settings = await loadSettings();
   
         const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=${milesToMeters(settings.distance)}&type=restaurant&keyword=healthy&minprice=${settings.price[0]}&maxprice=${settings.price[2]}&key=${apiKey}`;
-  
+
+        updateProgress(40);
         const response = await fetch(url);
+        updateProgress(60);
         const data = await response.json();
-  
+        
+        updateProgress(80);
+
         if (!data.results || data.results.length === 0) {
           console.error("❌ No restaurants found!");
           alert("No restaurants found! Try adjusting your settings.");
           return;
         }
+
+        updateProgress(100);
+        hideProgress();
   
         // ✅ Extract restaurant data
         let restaurants = data.results.map((place) => ({
