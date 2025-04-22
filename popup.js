@@ -64,91 +64,85 @@ const apiKey = "AIzaSyC47XrOijQWBir0G0UtB-cjdGy7wwx-VwM";
  }
  
  async function fetchRestaurants() {
-     try {
- 
- 
-       // 🔄 Show Loading GIF and Hide the Wheel
-       document.getElementById("loading-gif").style.display = "block";
-       document.getElementById("wheel").style.display = "none";
-       showProgress();
- 
-       navigator.geolocation.getCurrentPosition(async (position) => {
-         updateProgress(20);
-         const { latitude: lat, longitude: lng } = position.coords;
-         const settings = await loadSettings();
- 
-         const url = `https://api.foursquare.com/v3/places/search`
-          + `?ll=${lat},${lng}`
-          + `&radius=${meters}`
-          + `&query=healthy%20restaurant`
-          + `&limit=30`;
- 
-          const response = await fetch(url, {
-            headers: {
-              "Accept": "application/json",
-              "Authorization": "fsq3phKvw54eZD+pX8jMqDdZMULlNMZBYeWMOXGZdwi89CA="
-            }
-          });
+  // 1) Kick off the loader
+  showProgress();
+  document.getElementById("loading-gif").style.display = "block";
+  document.getElementById("wheel").style.display      = "none";
 
+  // 2) Get location
+  navigator.geolocation.getCurrentPosition(
+    async (position) => {
+      try {
+        updateProgress(20);
+        const { latitude: lat, longitude: lng } = position.coords;
+        const { distance, price } = await loadSettings();
+  
+        // Build your Foursquare URL (example)
+        const meters = milesToMeters(distance);
+        const url = `https://api.foursquare.com/v3/places/search`
+                  + `?ll=${lat},${lng}`
+                  + `&radius=${meters}`
+                  + `&query=healthy%20restaurant`
+                  + `&limit=30`;
+        updateProgress(40);
+  
+        // Fetch with your FSQ key
+        const response = await fetch(url, {
+          headers: {
+            "Accept": "application/json",
+            "Authorization": FSQ_KEY
+          }
+        });
+        updateProgress(60);
+  
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+  
+        const data = await response.json();
+        updateProgress(80);
+  
+        if (!data.results || !data.results.length) {
+          throw new Error("No places returned");
+        }
+  
+        // Dedupe & map
+        const seen = new Set();
+        const restaurants = data.results
+          .map(p => ({
+            name: p.name,
+            googleMapsLink: `https://foursquare.com/v/${p.fsq_id}`
+          }))
+          .filter(r => seen.has(r.name) ? false : seen.add(r.name));
+  
+        // 3) After your 2s “spinner” delay, show the wheel
+        setTimeout(() => {
+          document.getElementById("loading-gif").style.display = "none";
+          document.getElementById("wheel").style.display      = "block";
+          updateWheel(restaurants);
 
-         const data = await response.json();
-   
-         
-         updateProgress(80);
- 
-         if (!data.results || data.results.length === 0) {
-           console.error("❌ No restaurants found!");
-           alert("No restaurants found! Try adjusting your settings.");
-           return;
-         }
- 
-         updateProgress(100);
-         hideProgress();
- 
-         // ✅ Extract restaurant data
-         let restaurants = data.results.map((place) => ({
-           name: place.name,
-           googleMapsLink: `https://foursquare.com/v/${place.fsq_id}`, // Add Google Maps link
-         }));
- 
- 
-         // ✅ Remove duplicate restaurant names
-         const seen = new Set();
-         restaurants = restaurants.filter((restaurant) => {
-           if (seen.has(restaurant.name)) {
-             return false; // Duplicate found, skip this restaurant
-           }
-           seen.add(restaurant.name);
-           return true; // Unique restaurant, keep it
-         });
- 
-         console.log("✅ Unique Restaurants fetched:", restaurants);
- 
-         // ✅ Store restaurant details globally
-         restaurantDetails = restaurants.reduce((acc, r) => {
-           acc[r.name] = r;
-           return acc;
-         }, {});
- 
-         // ⏳ Wait 5 seconds before showing the wheel
-         setTimeout(() => {
-           document.getElementById("loading-gif").style.display = "none"; // ✅ Hide Loading GIF
-           document.getElementById("wheel").style.display = "block"; // ✅ Show the wheel
-           updateWheel(restaurants); // ✅ Update the wheel with restaurant names
-         }, 2000);
- 
-       }, (error) => {
-         console.error("❌ Geolocation error:", error);
-         alert("Please enable location access to fetch restaurants.");
-         document.getElementById("loading-gif").style.display = "none"; // ✅ Hide loading GIF on error
-         document.getElementById("wheel").style.display = "block";
-       });
-     } catch (error) {
-       console.error("❌ Error fetching restaurants:", error);
-       document.getElementById("loading-gif").style.display = "none"; // ✅ Hide loading GIF on error
-       document.getElementById("wheel").style.display = "block";
-     }
-   }  
+          updateProgress(100);
+          hideProgress();
+        }, 2000);
+
+      } catch (err) {
+        console.error("Fetch error:", err);
+        // On any error, hide the loader and show the wheel
+        hideProgress();
+        document.getElementById("loading-gif").style.display = "none";
+        document.getElementById("wheel").style.display      = "block";
+        alert("Error fetching places: " + err.message);
+      }
+    },
+    (geoErr) => {
+      console.error("Geolocation error:", geoErr);
+      hideProgress();
+      document.getElementById("loading-gif").style.display = "none";
+      document.getElementById("wheel").style.display      = "block";
+      alert("Please enable location access.");
+    }
+  );
+}
  
    function updateWheel(restaurants) {
      options.length = 0; // Clear the current options array
