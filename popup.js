@@ -49,6 +49,18 @@ async function fetchRestaurants() {
           placeId: place.place_id,
           googleMapsLink: `https://www.google.com/maps/place/?q=place_id:${place.place_id}`, // Add Google Maps link
         }));
+
+        function showHistory() {
+          document.getElementById('main-view').style.display     = 'none';
+          document.getElementById('settings-view').style.display = 'none';
+          document.getElementById('history-view').style.display  = 'block';
+          renderHistory();    // Populate the <ul> with past picks
+        }
+        
+        function hideHistory() {
+          document.getElementById('history-view').style.display = 'none';
+          document.getElementById('main-view').style.display    = 'block';
+        }
   
         // ✅ Remove duplicate restaurant names
         const seen = new Set();
