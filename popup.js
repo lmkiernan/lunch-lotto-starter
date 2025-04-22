@@ -78,7 +78,7 @@ const apiKey = "AIzaSyC47XrOijQWBir0G0UtB-cjdGy7wwx-VwM";
         const { distance, price } = await loadSettings();
   
         // Build your Foursquare URL (example)
-        const meters = milesToMeters(distance);
+        const meters = Math.round(milesToMeters(distance));
         const url = `https://api.foursquare.com/v3/places/search`
                   + `?ll=${lat},${lng}`
                   + `&radius=${meters}`
