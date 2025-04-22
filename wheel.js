@@ -162,7 +162,7 @@ function truncateOption(option) {
 
       //STORE THE SELECTED OPTION
       
-      chrome.storage.sync.set({ history: [selectedOption.name] }, (result) => {
+      chrome.storage.sync.set({ history: history.push([selectedOption.name]) }, (result) => {
         console.log("Current History:", result.history);
         const history = result.history || [];
         history.push({

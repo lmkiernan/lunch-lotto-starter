@@ -49,6 +49,12 @@ async function fetchRestaurants() {
           placeId: place.place_id,
           googleMapsLink: `https://www.google.com/maps/place/?q=place_id:${place.place_id}`, // Add Google Maps link
         }));
+
+        chrome.storage.sync.set({ history: [] }, (result) => {
+          chrome.storage.sync.set({ history }, () => {
+            console.log("History updated:", history);
+          });
+        });
   
         // ✅ Remove duplicate restaurant names
         const seen = new Set();
