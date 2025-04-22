@@ -162,19 +162,23 @@ function truncateOption(option) {
 
       //STORE THE SELECTED OPTION
       
-      chrome.storage.sync.set({ history: history.push([selectedOption.name]) }, (result) => {
-        console.log("Current History:", result.history);
-        const history = result.history || [];
-        history.push({
-          name: selectedOption.name,
-          link: selectedOption.googleMapsLink,
-          timestamp: new Date().toISOString(),
-        });
-      
-        chrome.storage.sync.set({ history }, () => {
-          console.log("History updated:", history);
-        });
+      // right after you compute `selectedOption`:
+    chrome.storage.sync.get({ history: [] }, (data) => {
+      // data.history is guaranteed to be an array
+      const history = data.history;
+
+      // append the new pick
+      history.push({
+        name: selectedOption.name,
+        link: selectedOption.googleMapsLink,
+        timestamp: new Date().toISOString(),
       });
+
+      // write the updated array back to storage
+      chrome.storage.sync.set({ history }, () => {
+        console.log("History updated:", history);
+      });
+    });
 
       // Motivational messages to encourage the user
       const messages = [
