@@ -65,12 +65,13 @@ function hideHistory() {
 
 async function fetchRestaurants() {
     try {
-
+      
+      showProgress();
 
       // 🔄 Show Loading GIF and Hide the Wheel
       document.getElementById("loading-gif").style.display = "block";
       document.getElementById("wheel").style.display = "none";
-      showProgress();
+      
   
       navigator.geolocation.getCurrentPosition(async (position) => {
         updateProgress(20);
