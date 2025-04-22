@@ -19,45 +19,16 @@
     <!-- 🎡 Main View -->
     <div id="main-view">
 
-      <div id="progress-container">
+      
+      
+      <div id="wheel-container">
         <progress
           id="api-progress"
           max="100"
           value="0"
           style="width: 100%; display: none;"
         ></progress>
-      </div>
-      
-      <div id="wheel-container" style="position: relative;">
-
-        <!-- Progress bar now lives here, absolutely positioned -->
-        <progress
-          id="api-progress"
-          max="100"
-          value="0"
-          style="
-            position: absolute;
-            top: 10px;
-            left: 0;
-            width: 100%;
-            display: none;
-            z-index: 100;
-          "
-        ></progress>
-    
-        <!-- Loading GIF beneath the bar -->
-        <img
-          id="loading-gif"
-          src="assets/loading.gif"
-          alt="Loading..."
-          style="
-            display: none;
-            width: 100%;
-            height: auto;
-          "
-        >
-    
-        <!-- Wheel canvas stays as-is -->
+        <img id="loading-gif" src="assets/loading.gif" alt="Loading..." style="display: none;">
         <canvas id="wheel" width="310" height="310"></canvas>
         <button id="spin">Spin</button>
       </div>
