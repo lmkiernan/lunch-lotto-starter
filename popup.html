@@ -23,6 +23,15 @@
         <canvas id="wheel" width="310" height="310"></canvas>
         <button id="spin">Spin</button>
       </div>
+
+      <div class="button-row">
+        <button id="open-settings">
+          <img src="assets/filter.jpg" alt="Settings">
+        </button>
+        <button id="open-history">
+          📜 History
+        </button>
+      </div>
       <!-- 🏆 Selected Restaurant Result -->
       <div id="result-container" style="display: none;">
         <p id="selected-restaurant"></p>
@@ -50,6 +59,12 @@
       </div>
       <button id="save-settings">Save</button>
       <button id="close-settings">Back</button>
+    </div>
+
+    <div id="history-view" class="view" style="display: none;">
+      <h3>Your Spin History</h3>
+      <ul id="history-list"></ul>
+      <button id="close-history">Back</button>
     </div>
   </div>
 
