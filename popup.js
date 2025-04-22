@@ -65,7 +65,7 @@ function hideHistory() {
 
 async function fetchRestaurants() {
     try {
-      
+
       showProgress();
 
       // 🔄 Show Loading GIF and Hide the Wheel
@@ -131,6 +131,9 @@ async function fetchRestaurants() {
           document.getElementById("loading-gif").style.display = "none"; // ✅ Hide Loading GIF
           document.getElementById("wheel").style.display = "block"; // ✅ Show the wheel
           updateWheel(restaurants); // ✅ Update the wheel with restaurant names
+
+          updateProgress(100);
+          hideProgress();
         }, 2000);
   
       }, (error) => {
