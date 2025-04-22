@@ -18,10 +18,14 @@
   <div id="popup-container">
     <!-- 🎡 Main View -->
     <div id="main-view">
-
-      
       
       <div id="wheel-container">
+        <progress
+          id="api-progress"
+          max="100"
+          value="0"
+          style="width: 100%; display: none;"
+        ></progress>
         <img id="loading-gif" src="assets/loading.gif" alt="Loading..." style="display: none;">
         <canvas id="wheel" width="310" height="310"></canvas>
         <button id="spin">Spin</button>
