@@ -77,12 +77,20 @@ const apiKey = "AIzaSyC47XrOijQWBir0G0UtB-cjdGy7wwx-VwM";
          const { latitude: lat, longitude: lng } = position.coords;
          const settings = await loadSettings();
  
-         const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=${milesToMeters(settings.distance)}&type=restaurant&keyword=healthy&minprice=${settings.price[0]}&maxprice=${settings.price[2]}&key=${apiKey}`;
-   
+         const url = `https://api.foursquare.com/v3/places/search`
+          + `?ll=${lat},${lng}`
+          + `&radius=${meters}`
+          + `&query=healthy%20restaurant`
+          + `&limit=30`;
  
-         updateProgress(40);
-         const response = await fetch(url);
-         updateProgress(60);
+          const response = await fetch(url, {
+            headers: {
+              "Accept": "application/json",
+              "Authorization": "fsq3phKvw54eZD+pX8jMqDdZMULlNMZBYeWMOXGZdwi89CA="
+            }
+          });
+
+
          const data = await response.json();
    
          
@@ -100,12 +108,7 @@ const apiKey = "AIzaSyC47XrOijQWBir0G0UtB-cjdGy7wwx-VwM";
          // ✅ Extract restaurant data
          let restaurants = data.results.map((place) => ({
            name: place.name,
-           distance: (settings.distance).toFixed(1),
-           price: place.price_level ? "$".repeat(place.price_level) : "Unknown",
-           lat: place.geometry.location.lat,
-           lng: place.geometry.location.lng,
-           placeId: place.place_id,
-           googleMapsLink: `https://www.google.com/maps/place/?q=place_id:${place.place_id}`, // Add Google Maps link
+           googleMapsLink: `https://foursquare.com/v/${place.fsq_id}`, // Add Google Maps link
          }));
  
  
